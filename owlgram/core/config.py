@@ -34,7 +34,29 @@ class GeneralConfig(BaseSettings):
     origins: list[str] = Field(default=["*"])
 
 
+class JWTConfig(BaseSettings):
+    """JWT configuration."""
+
+    algorithm: str = Field(default="HS256")
+    secret_key: str
+
+
+class DatabaseConfig(BaseSettings):
+    """Database configuration."""
+
+    url: str
+
+
+class RedisConfig(BaseSettings):
+    """Redis configuration."""
+
+    url: str
+
+
 class AppConfig(BaseConfig):
     """Global application configuration."""
 
     general: GeneralConfig
+    jwt: JWTConfig
+    database: DatabaseConfig
+    redis: RedisConfig

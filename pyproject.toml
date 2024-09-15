@@ -19,11 +19,22 @@ python-multipart = "^0.0.9"                            # Multipart form files ha
 pyfa-converter-v2 = "^2.0.0rc1"                        # Utility to convert Pydantic models to FastAPI dependencies
 uvicorn = { extras = ["standard"], version = "^0.30" } # ASGI web-server
 
+# Database
+sqlalchemy = "^2.0"      # Database-framework
+asyncpg = "^0.29"        # Async postgres driver
+alembic = "^1.13"        # Database migrations
+python-dateutil = "^2.9" # Date handling
+pytz = "^2024.1"         # Timezone handling
+
+# Caching
+redis = { version = "^5.0", extras = ["hiredis"] } # Redis
+
 # CLI
 click = "^8.1" # CLI framework
 
 # Other
 pydantic-settings = "^2.3.3" # Settings framework
+pyjwt = "^2.8.0"             # JWT
 
 
 [tool.poetry.group.dev.dependencies]
