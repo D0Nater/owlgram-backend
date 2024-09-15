@@ -2,12 +2,14 @@
 set -e
 
 if [ "$MODE" = "app" ]; then
-  statusmgr run -p $PORT -h $HOST
+  owlgram run -p $PORT -h $HOST
 elif [ "$MODE" = "dev" ]; then
-  statusmgr dev --docker
+  owlgram dev --docker
+elif [ "$MODE" = "migrations" ]; then
+  pwstorage db migrate
 elif [ "$MODE" = "shell" ]; then
   $@
 else
-  echo "ERROR: \$MODE is not set to \"app\", \"dev\" or \"shell\"."
+  echo "ERROR: \$MODE is not set to \"app\", \"dev\", \"migrations\" or \"shell\"."
   exit 1
 fi

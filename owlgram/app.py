@@ -1,13 +1,13 @@
 """Module containing main FastAPI application."""
 
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 from typing import AsyncGenerator, Self
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import AppConfig
-from .core.dependencies import fastapi as depend_stubs
+from .core.dependencies import constructors as app_depends, fastapi as depend_stubs
 from .core.exceptions.handler import regiter_exception_handlers
 from .lib.utils.openapi import generate_operation_id, get_openapi
 from .routers import router
@@ -68,9 +68,13 @@ class App:
     @asynccontextmanager
     async def lifespan(self, app: FastAPI) -> AsyncGenerator[None, None]:
         """Lifespan."""
-        app.dependency_overrides[depend_stubs.app_config_stub] = lambda: self.config
+        async with (asynccontextmanager(app_depends.redis_pool)(self.config.redis.url) as redis_pool,):
+            with contextmanager(app_depends.db_session_maker)(self.config.database.url) as maker:
+                app.dependency_overrides[depend_stubs.app_config_stub] = lambda: self.config
+                app.dependency_overrides[depend_stubs.db_session_maker_stub] = lambda: maker
+                app.dependency_overrides[depend_stubs.redis_conn_pool_stub] = lambda: redis_pool
 
-        yield
+                yield
 
 
 def app() -> FastAPI:
